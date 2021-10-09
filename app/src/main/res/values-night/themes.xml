@@ -13,4 +13,11 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.SplashTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/teal_200</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_splash_screen</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.Duplex.NoActionBar</item>
+    </style>
 </resources>
