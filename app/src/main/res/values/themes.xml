@@ -24,7 +24,7 @@
     <style name="Theme.Duplex.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Theme.SplashTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/splash_screen_background</item>
+        <item name="windowSplashScreenBackground">@color/splash_screen_light_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo_splash_screen</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
         <item name="postSplashScreenTheme">@style/Theme.Duplex.NoActionBar</item>
