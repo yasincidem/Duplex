@@ -1,6 +1,7 @@
 package com.yasincidem.duplex.feature.ui.home
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -22,6 +23,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
@@ -199,7 +201,8 @@ fun HomeScreen() {
                             .fillMaxHeight()
                             .padding(top = 8.dp),
                         onClick = { dropdownState.value = true },
-                        shape = CircleShape
+                        shape = CircleShape,
+                        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled))
                     ) {
 
                         CountryCode(country = countryState.value)
