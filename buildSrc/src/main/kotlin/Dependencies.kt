@@ -44,7 +44,7 @@ object Deps {
 
     const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
     const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx"
-    const val firebaseAuthKtx = "com.google.firebase:firebase-auth-ktx"
+    const val firebaseAuth = "com.google.firebase:firebase-auth-ktx"
     const val gmsAuth = "com.google.android.gms:play-services-auth:${Versions.gmsAuth}"
 
     const val dagger = "com.google.dagger:dagger:${Versions.dagger}"

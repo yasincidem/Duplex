@@ -91,6 +91,7 @@ dependencies {
     // Firebase
     implementation(platform(Deps.firebaseBom))
     implementation(Deps.firebaseAnalytics)
+    implementation(Deps.firebaseAuth)
 
     //Coroutines
     implementation(Deps.coroutinesCore)
