@@ -3,6 +3,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -86,6 +87,10 @@ dependencies {
     kapt(Deps.daggerCompiler)
     implementation(Deps.hilt)
     kapt(Deps.hiltCompiler)
+
+    // Firebase
+    implementation(platform(Deps.firebaseBom))
+    implementation(Deps.firebaseAnalytics)
 
     //Coroutines
     implementation(Deps.coroutinesCore)

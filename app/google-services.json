@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "273549540896",
+    "project_id": "duplex-official",
+    "storage_bucket": "duplex-official.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273549540896:android:05198fa20a2c5743e44645",
+        "android_client_info": {
+          "package_name": "com.yasincidem.duplex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "273549540896-eq2phlc4b9744bt7efi8pja5219hfbqt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yasincidem.duplex",
+            "certificate_hash": "4a0d2484087a5f40b14b05309c19f8b7b4db3de2"
+          }
+        },
+        {
+          "client_id": "273549540896-1i1klf9smmk6p1n4tilmo94ncglndvn1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbB1lO__ulrJksySE9N59QNUClHJt4izc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "273549540896-1i1klf9smmk6p1n4tilmo94ncglndvn1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
