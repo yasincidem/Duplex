@@ -30,6 +30,7 @@ object Versions {
     const val lifecycle = "2.4.0-alpha03"
 
     const val firebaseBom = "28.4.2"
+    const val firebaseAppCheck = "16.0.0-beta03"
     const val firebaseUIAuth = "7.2.0"
     const val gmsAuth = "19.2.0"
 

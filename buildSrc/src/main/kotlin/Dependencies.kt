@@ -43,6 +43,7 @@ object Deps {
     const val coil = "io.coil-kt:coil-compose:${Versions.coil}"
 
     const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
+    const val firebaseAppCheck = "com.google.firebase:firebase-appcheck-safetynet:${Versions.firebaseAppCheck}"
     const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx"
     const val firebaseAuth = "com.google.firebase:firebase-auth-ktx"
     const val gmsAuth = "com.google.android.gms:play-services-auth:${Versions.gmsAuth}"

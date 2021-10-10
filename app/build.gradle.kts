@@ -90,6 +90,7 @@ dependencies {
 
     // Firebase
     implementation(platform(Deps.firebaseBom))
+    implementation(Deps.firebaseAppCheck)
     implementation(Deps.firebaseAnalytics)
     implementation(Deps.firebaseAuth)
 
