@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Duplex</string>
+    <string name="terms_and_conditions_title">Terms and Conditions</string>
+    <string name="privacy_policy_title">Privacy Policy</string>
 </resources>

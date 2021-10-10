@@ -40,6 +40,7 @@ object Deps {
     const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
 
     const val lottie = "com.airbnb.android:lottie-compose:${Versions.lottie}"
+    const val coil = "io.coil-kt:coil-compose:${Versions.coil}"
 
     const val firebaseBom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
     const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx"

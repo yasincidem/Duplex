@@ -25,6 +25,7 @@ object Versions {
     const val dataStore = "1.0.0"
 
     const val lottie = "4.1.0"
+    const val coil = "1.4.0"
 
     const val lifecycle = "2.4.0-alpha03"
 

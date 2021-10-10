@@ -100,6 +100,7 @@ dependencies {
 
     // Image
     implementation(Deps.lottie)
+    implementation(Deps.coil)
     implementation(Deps.splashScreen)
 
     // Debug
