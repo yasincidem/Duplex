@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
@@ -74,6 +73,7 @@ fun HomeScreen() {
 
     val phoneState = rememberSaveable { mutableStateOf("") }
     val dropdownState = remember { mutableStateOf(false) }
+    val submitButtonClickedState = remember { mutableStateOf(false) }
     val countryState = remember { mutableStateOf(DefaultCountry) }
 
     val privacyPolicy = stringResource(id = R.string.privacy_policy_title)
@@ -181,6 +181,7 @@ fun HomeScreen() {
                     label = {
                         Text(text = "Username")
                     },
+                    isError = phoneState.value.isEmpty() && submitButtonClickedState.value,
                     textStyle = MaterialTheme.typography.body1.copy(color = MainOrange),
                     singleLine = true,
                     shape = CircleShape
@@ -202,7 +203,8 @@ fun HomeScreen() {
                             .padding(top = 8.dp),
                         onClick = { dropdownState.value = true },
                         shape = CircleShape,
-                        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled))
+                        border = BorderStroke(width = 1.dp,
+                            color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled))
                     ) {
 
                         CountryCode(country = countryState.value)
@@ -210,7 +212,6 @@ fun HomeScreen() {
                         DropdownMenu(
                             expanded = dropdownState.value,
                             onDismissRequest = { dropdownState.value = false },
-                            modifier = Modifier.wrapContentWidth()
                         ) {
                             Countries.forEach { country ->
                                 DropdownMenuItem(
@@ -239,8 +240,12 @@ fun HomeScreen() {
                             }
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        isError = phoneState.value.isEmpty() && submitButtonClickedState.value,
                         label = {
-                            Text(text = "Phone Number")
+                            if (phoneState.value.isEmpty() && submitButtonClickedState.value)
+                                Text(text = "Phone Number *")
+                            else
+                                Text(text = "Phone Number")
                         },
                         textStyle = MaterialTheme.typography.body1.copy(color = MainOrange),
                         singleLine = true,
@@ -258,6 +263,7 @@ fun HomeScreen() {
                             "${countryState.value.countryCode}${phoneState.value}",
                             Toast.LENGTH_SHORT
                         ).show()
+                        submitButtonClickedState.value = true
                     },
                     shape = CircleShape
                 ) {
