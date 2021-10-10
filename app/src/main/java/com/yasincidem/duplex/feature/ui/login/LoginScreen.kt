@@ -1,6 +1,11 @@
-package com.yasincidem.duplex.feature.ui.home
+package com.yasincidem.duplex.feature.ui.login
 
-import android.widget.Toast
+import android.content.Context
+import android.content.ContextWrapper
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,19 +56,30 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.yasincidem.duplex.R
 import com.yasincidem.duplex.common.constant.Countries
 import com.yasincidem.duplex.common.constant.Country
 import com.yasincidem.duplex.common.constant.DefaultCountry
+import com.yasincidem.duplex.navigation.LeafScreen
+import com.yasincidem.duplex.navigation.LocalNavigator
+import com.yasincidem.duplex.navigation.Navigator
 import com.yasincidem.duplex.ui.theme.MainDarkBlue
 import com.yasincidem.duplex.ui.theme.MainLightOrange
 import com.yasincidem.duplex.ui.theme.MainOrange
 import com.yasincidem.duplex.ui.theme.Translucent
 
 @Composable
-fun HomeScreen() {
+fun LoginScreen(
+    loginViewModel: LoginViewModel = viewModel(),
+    navigator: Navigator = LocalNavigator.current,
+) {
 
     val systemUiController = rememberSystemUiController()
     val isDarkMode = isSystemInDarkTheme()
@@ -72,6 +88,7 @@ fun HomeScreen() {
     val scrollState = rememberScrollState()
 
     val phoneState = rememberSaveable { mutableStateOf("") }
+    val userNameState = rememberSaveable { mutableStateOf("") }
     val dropdownState = remember { mutableStateOf(false) }
     val submitButtonClickedState = remember { mutableStateOf(false) }
     val countryState = remember { mutableStateOf(DefaultCountry) }
@@ -99,6 +116,29 @@ fun HomeScreen() {
             append("duplex")
         }
     }
+
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                loginViewModel.signWithCredential(credential)
+                navigator.navigate(LeafScreen.Main) {
+                    launchSingleTop = true
+                    popUpTo(0)
+                }
+            } catch (e: ApiException) {
+                Log.w("TAG", "Google sign in failed", e)
+            }
+        }
+
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(stringResource(id = R.string.default_web_client_id))
+        .requestEmail()
+        .build()
+
+    val googleSignInClient = GoogleSignIn.getClient(context, gso)
 
     SideEffect {
         systemUiController.apply {
@@ -166,22 +206,18 @@ fun HomeScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 24.dp, start = 16.dp, end = 16.dp),
-                    value = phoneState.value,
+                    value = userNameState.value,
                     onValueChange = { input ->
-                        if (input.isEmpty()) {
-                            phoneState.value = input
-                        } else {
-                            phoneState.value = when (input.toLongOrNull()) {
-                                null -> phoneState.value
-                                else -> input
-                            }
-                        }
+                        userNameState.value = input
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     label = {
-                        Text(text = "Username")
+                        if (userNameState.value.isEmpty() && submitButtonClickedState.value)
+                            Text(text = "Username *")
+                        else
+                            Text(text = "Username")
                     },
-                    isError = phoneState.value.isEmpty() && submitButtonClickedState.value,
+                    isError = userNameState.value.isEmpty() && submitButtonClickedState.value,
                     textStyle = MaterialTheme.typography.body1.copy(color = MainOrange),
                     singleLine = true,
                     shape = CircleShape
@@ -203,8 +239,10 @@ fun HomeScreen() {
                             .padding(top = 8.dp),
                         onClick = { dropdownState.value = true },
                         shape = CircleShape,
-                        border = BorderStroke(width = 1.dp,
-                            color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled))
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                        )
                     ) {
 
                         CountryCode(country = countryState.value)
@@ -258,24 +296,35 @@ fun HomeScreen() {
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp),
                     onClick = {
-                        Toast.makeText(
-                            context,
-                            "${countryState.value.countryCode}${phoneState.value}",
-                            Toast.LENGTH_SHORT
-                        ).show()
                         submitButtonClickedState.value = true
+                        if (phoneState.value.isNotEmpty() && userNameState.value.isNotEmpty()) {
+                            launcher.launch(googleSignInClient.signInIntent)
+                        }
                     },
                     shape = CircleShape
                 ) {
-                    Text(
+                    Row(
                         modifier = Modifier.padding(vertical = 8.dp),
-                        text = "Continue with your number",
-                        style = MaterialTheme.typography.body2.copy(
-                            color = if (isDarkMode) MainDarkBlue else MainLightOrange,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .background(color = Color.White, shape = CircleShape)
+                                .padding(4.dp),
+                            painter = painterResource(id = R.drawable.googleg_standard_color_18),
+                            contentDescription = "sign in with google icon"
                         )
-                    )
+                        Text(
+                            text = "Continue with Google",
+                            style = MaterialTheme.typography.body2.copy(
+                                color = if (isDarkMode) MainDarkBlue else MainLightOrange,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        )
+                    }
                 }
 
                 ClickableText(
@@ -310,4 +359,10 @@ fun CountryCode(country: Country) {
         )
         Text(text = country.getCountryCodeString())
     }
+}
+
+tailrec fun Context.getActivity(): AppCompatActivity? = when (this) {
+    is AppCompatActivity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }

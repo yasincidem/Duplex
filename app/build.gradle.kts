@@ -93,10 +93,12 @@ dependencies {
     implementation(Deps.firebaseAppCheck)
     implementation(Deps.firebaseAnalytics)
     implementation(Deps.firebaseAuth)
+    implementation(Deps.gmsAuth)
 
     //Coroutines
     implementation(Deps.coroutinesCore)
     implementation(Deps.coroutinesAndroid)
+    implementation(Deps.coroutinesPS)
 
     // Accompanist
     implementation(Deps.accompanistUIController)

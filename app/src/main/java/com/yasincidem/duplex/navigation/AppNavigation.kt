@@ -9,13 +9,14 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.yasincidem.duplex.common.composable.collectEvent
-import com.yasincidem.duplex.feature.ui.home.HomeScreen
+import com.yasincidem.duplex.feature.ui.login.LoginScreen
+import com.yasincidem.duplex.feature.ui.main.MainScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun AppNavigation(
     navController: NavHostController = rememberAnimatedNavController(),
-    isOnBoardingSeen: Boolean? = true,
+    isLoggedIn: Boolean?,
     navigator: Navigator = LocalNavigator.current,
 ) {
 
@@ -29,23 +30,23 @@ internal fun AppNavigation(
         }
     }
 
-    if (isOnBoardingSeen == null) return
+    if (isLoggedIn == null) return
 
-    val startRootDestination = when (isOnBoardingSeen) {
+    val startRootDestination = when (isLoggedIn) {
         false -> {
-            RootScreen.Home.route
+            RootScreen.Login.route
         }
         true -> {
-            RootScreen.Home.route
+            RootScreen.Main.route
         }
     }
 
-    val startLeafDestination = when (isOnBoardingSeen) {
+    val startLeafDestination = when (isLoggedIn) {
         false -> {
-            LeafScreen.Home.route
+            LeafScreen.Login.route
         }
         true -> {
-            LeafScreen.Home.route
+            LeafScreen.Main.route
         }
     }
 
@@ -53,23 +54,39 @@ internal fun AppNavigation(
         navController = navController,
         startDestination = startRootDestination
     ) {
-        addMainRoot(navController)
+        addMainRoot(
+            navController,
+            startRootDestination,
+            startLeafDestination
+        )
     }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
-private fun NavGraphBuilder.addMainRoot(navController: NavController) {
+private fun NavGraphBuilder.addMainRoot(
+    navController: NavController,
+    startRootDestination: String,
+    startLeafDestination: String,
+) {
     navigation(
-        route = RootScreen.Home.route,
-        startDestination = LeafScreen.Home.route
+        route = startRootDestination,
+        startDestination = startLeafDestination
     ) {
-        addHome(navController)
+        addMain()
+        addLogin()
     }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
-private fun NavGraphBuilder.addHome(navController: NavController) {
-    composableScreen(LeafScreen.Home) {
-        HomeScreen()
+private fun NavGraphBuilder.addLogin() {
+    composableScreen(LeafScreen.Login) {
+        LoginScreen()
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addMain() {
+    composableScreen(LeafScreen.Main) {
+        MainScreen()
     }
 }

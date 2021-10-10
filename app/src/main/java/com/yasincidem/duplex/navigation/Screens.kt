@@ -5,6 +5,9 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
@@ -36,7 +39,8 @@ sealed class RootScreen constructor(
     val popEnterTransition: PopEnterTransitionAnimation = enterTransition,
     val popExitTransition: PopExitTransitionAnimation = exitTransition,
 ) : Screen {
-    object Home : RootScreen("home_root", LeafScreen.Home)
+    object Login : RootScreen("login_root", LeafScreen.Login)
+    object Main : RootScreen("main_root", LeafScreen.Main)
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -49,10 +53,25 @@ sealed class LeafScreen(
     val popEnterTransition: PopEnterTransitionAnimation = enterTransition,
     val popExitTransition: PopExitTransitionAnimation = exitTransition,
 ) : Screen {
-    object Home : LeafScreen(
-        "home",
+    object Login : LeafScreen(
+        "login",
+        exitTransition = { initial, target ->
+            when (target.destination.route) {
+                "main" -> {
+                    slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(600))
+                }
+                else -> null
+            }
+        }
+    )
+
+    object Main : LeafScreen(
+        "main",
         enterTransition = { initial, target ->
             when (initial.destination.route) {
+                "login" -> {
+                    slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(600))
+                }
                 else -> {
                     null
                 }
