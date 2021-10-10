@@ -7,7 +7,8 @@ val DefaultCountry = Country(R.drawable.flag_turkey, 90)
 
 val Countries = listOf(
     DefaultCountry,
-    Country(R.drawable.flag_germany, 49)
+    Country(R.drawable.flag_germany, 49),
+    Country(R.drawable.flag_usa, 1),
 )
 
 data class Country(

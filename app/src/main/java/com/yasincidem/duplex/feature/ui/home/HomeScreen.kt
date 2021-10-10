@@ -2,8 +2,10 @@ package com.yasincidem.duplex.feature.ui.home
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -31,10 +33,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -45,7 +47,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,7 +69,6 @@ fun HomeScreen() {
     val barColor = MaterialTheme.colors.background
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val scope = rememberCoroutineScope()
 
     val phoneState = rememberSaveable { mutableStateOf("") }
     val dropdownState = remember { mutableStateOf(false) }
@@ -92,18 +92,8 @@ fun HomeScreen() {
     }
 
     val BRANDING_TEXT = buildAnnotatedString {
-        append("Speed up your ")
-        withStyle(
-            SpanStyle(
-                textDecoration = TextDecoration.Underline,
-                fontStyle = FontStyle.Italic,
-                color = MainOrange
-            )
-        ) {
-            append("communication")
-        }
-        append(" with ")
-        withStyle(SpanStyle(fontStyle = FontStyle.Italic, color = MainOrange)) {
+        append("Welcome to ")
+        withStyle(SpanStyle(fontSize = 20.sp, fontStyle = FontStyle.Italic, color = MainOrange)) {
             append("duplex")
         }
     }
@@ -129,26 +119,43 @@ fun HomeScreen() {
     ) {
 
         Column(
-            modifier = Modifier.verticalScroll(scrollState),
-            verticalArrangement = Arrangement.SpaceBetween
+            Modifier.verticalScroll(scrollState)
         ) {
-
-            Column {
-                Image(
-                    painter = painterResource(id = R.drawable.login_illustration),
-                    contentDescription = null,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp),
-                    contentScale = ContentScale.Crop
-                )
-                Text(text = BRANDING_TEXT)
+                        .height(260.dp)
+                ) {
+                    Image(
+                        modifier = Modifier.height(250.dp),
+                        painter = painterResource(id = R.drawable.login_illustration),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth
+                    )
+
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Color.Transparent,
+                                        if (isDarkMode) MainDarkBlue else MainLightOrange,
+                                    )
+                                )
+                            )
+                    )
+                }
             }
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -181,16 +188,16 @@ fun HomeScreen() {
                     Modifier
                         .fillMaxWidth()
                         .padding(bottom = 32.dp, start = 16.dp, end = 16.dp)
-                        .height(intrinsicSize = IntrinsicSize.Max),
-                    verticalAlignment = Alignment.CenterVertically,
+                        .height(IntrinsicSize.Max),
                     horizontalArrangement = Arrangement.spacedBy(
-                        16.dp,
-                        Alignment.CenterHorizontally
+                        16.dp
                     )
                 ) {
 
                     OutlinedButton(
-                        modifier = Modifier.fillMaxHeight(),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(top = 8.dp),
                         onClick = { dropdownState.value = true },
                         shape = CircleShape
                     ) {
@@ -216,6 +223,7 @@ fun HomeScreen() {
                     }
 
                     OutlinedTextField(
+                        modifier = Modifier.fillMaxHeight(),
                         value = phoneState.value,
                         onValueChange = { input ->
                             if (input.isEmpty()) {
@@ -237,27 +245,10 @@ fun HomeScreen() {
                     )
                 }
 
-                ClickableText(
-                    text = LOGIN_WARNING_TEXT,
-                    style = MaterialTheme.typography.subtitle2.copy(
-                        color = Color.LightGray,
-                        fontSize = 11.sp,
-                    ),
-                    onClick = { offset ->
-                        LOGIN_WARNING_TEXT.getStringAnnotations(privacyPolicy, offset, offset)
-                            .firstOrNull()?.let {
-                            }
-
-                        LOGIN_WARNING_TEXT.getStringAnnotations(termsAndConditions, offset, offset)
-                            .firstOrNull()?.let {
-                            }
-                    }
-                )
-
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        .padding(start = 16.dp, end = 16.dp),
                     onClick = {
                         Toast.makeText(
                             context,
@@ -277,6 +268,21 @@ fun HomeScreen() {
                         )
                     )
                 }
+
+                ClickableText(
+                    text = LOGIN_WARNING_TEXT,
+                    style = MaterialTheme.typography.subtitle2.copy(
+                        color = Color.LightGray,
+                        fontSize = 11.sp,
+                    ),
+                    onClick = { offset ->
+                        LOGIN_WARNING_TEXT.getStringAnnotations(privacyPolicy, offset, offset)
+                            .firstOrNull()?.let { }
+
+                        LOGIN_WARNING_TEXT.getStringAnnotations(termsAndConditions, offset, offset)
+                            .firstOrNull()?.let { }
+                    }
+                )
             }
         }
     }
