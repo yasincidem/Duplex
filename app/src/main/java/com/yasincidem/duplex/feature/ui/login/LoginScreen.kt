@@ -50,7 +50,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
@@ -67,6 +66,7 @@ import com.yasincidem.duplex.R
 import com.yasincidem.duplex.common.constant.Countries
 import com.yasincidem.duplex.common.constant.Country
 import com.yasincidem.duplex.common.constant.DefaultCountry
+import com.yasincidem.duplex.common.modifier.disableMultiTouch
 import com.yasincidem.duplex.navigation.LeafScreen
 import com.yasincidem.duplex.navigation.LocalNavigator
 import com.yasincidem.duplex.navigation.Navigator
@@ -110,13 +110,6 @@ fun LoginScreen(
         pop()
     }
 
-    val BRANDING_TEXT = buildAnnotatedString {
-        append("Welcome to ")
-        withStyle(SpanStyle(fontSize = 20.sp, fontStyle = FontStyle.Italic, color = MainOrange)) {
-            append("duplex")
-        }
-    }
-
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
@@ -158,6 +151,7 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .navigationBarsWithImePadding()
+            .disableMultiTouch()
     ) {
 
         Column(

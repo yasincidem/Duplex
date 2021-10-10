@@ -1,9 +1,7 @@
 package com.yasincidem.duplex.feature.ui.settings
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -16,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.yasincidem.duplex.ui.theme.MainOrangeAlpha
+import com.yasincidem.duplex.common.modifier.disableMultiTouch
 
 @Composable
 fun SettingsScreen() {
@@ -43,6 +41,7 @@ fun SettingsScreen() {
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
+            .disableMultiTouch()
     ) {
         Scaffold(
             topBar = {
@@ -53,7 +52,6 @@ fun SettingsScreen() {
                 )
             },
             content = {
-
             }
         )
     }

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yasincidem.duplex.R
+import com.yasincidem.duplex.common.modifier.disableMultiTouch
 import com.yasincidem.duplex.navigation.LeafScreen
 import com.yasincidem.duplex.navigation.LocalNavigator
 import com.yasincidem.duplex.navigation.Navigator
@@ -77,7 +78,8 @@ fun MainScreen(
     Scaffold(
         Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .systemBarsPadding()
+            .disableMultiTouch(),
         topBar = {
             TextField(
                 modifier = Modifier
