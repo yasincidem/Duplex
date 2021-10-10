@@ -40,6 +40,7 @@ import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yasincidem.duplex.R
 import com.yasincidem.duplex.ui.theme.MainDarkBlue
+import com.yasincidem.duplex.ui.theme.MainDarkBlueContent
 import com.yasincidem.duplex.ui.theme.MainLightOrange
 import com.yasincidem.duplex.ui.theme.MainOrange
 
@@ -127,7 +128,7 @@ fun MainScreen() {
                 shape = CircleShape,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = if (isDarkMode) {
-                        MainDarkBlue.copy(alpha = 0.2f)
+                        MainDarkBlueContent
                     } else {
                         MainOrange.copy(alpha = 0.2f)
                     },
@@ -139,7 +140,7 @@ fun MainScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /*TODO*/ },
-                contentColor = MainLightOrange
+                backgroundColor = if (isDarkMode) MainDarkBlueContent else MainOrange
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "new ")
             }
