@@ -39,9 +39,10 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yasincidem.duplex.R
-import com.yasincidem.duplex.ui.theme.MainDarkBlue
+import com.yasincidem.duplex.navigation.LeafScreen
+import com.yasincidem.duplex.navigation.LocalNavigator
+import com.yasincidem.duplex.navigation.Navigator
 import com.yasincidem.duplex.ui.theme.MainDarkBlueContent
-import com.yasincidem.duplex.ui.theme.MainLightOrange
 import com.yasincidem.duplex.ui.theme.MainOrange
 
 val MENU = listOf(
@@ -49,7 +50,9 @@ val MENU = listOf(
 )
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    navigator: Navigator = LocalNavigator.current,
+) {
 
     val systemUiController = rememberSystemUiController()
     val isDarkMode = isSystemInDarkTheme()
@@ -113,6 +116,12 @@ fun MainScreen() {
                             MENU.forEach { item ->
                                 DropdownMenuItem(
                                     onClick = {
+                                        when (item.first) {
+                                            0 -> {
+                                                navigator.navigate(LeafScreen.Settings)
+                                            }
+                                        }
+                                        dropdownState.value = false
                                     }
                                 ) {
                                     Text(text = item.second)

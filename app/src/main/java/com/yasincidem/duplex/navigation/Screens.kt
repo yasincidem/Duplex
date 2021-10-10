@@ -41,6 +41,7 @@ sealed class RootScreen constructor(
 ) : Screen {
     object Login : RootScreen("login_root", LeafScreen.Login)
     object Main : RootScreen("main_root", LeafScreen.Main)
+    object Settings : RootScreen("settings_root", LeafScreen.Settings)
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -77,6 +78,10 @@ sealed class LeafScreen(
                 }
             }
         }
+    )
+
+    object Settings : LeafScreen(
+        "settings"
     )
 }
 

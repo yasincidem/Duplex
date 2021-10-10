@@ -11,13 +11,14 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.yasincidem.duplex.common.composable.collectEvent
 import com.yasincidem.duplex.feature.ui.login.LoginScreen
 import com.yasincidem.duplex.feature.ui.main.MainScreen
+import com.yasincidem.duplex.feature.ui.settings.SettingsScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun AppNavigation(
     navController: NavHostController = rememberAnimatedNavController(),
     isLoggedIn: Boolean?,
-    navigator: Navigator = LocalNavigator.current,
+    navigator: Navigator = LocalNavigator.current
 ) {
 
     collectEvent(navigator.queue) { event ->
@@ -74,6 +75,7 @@ private fun NavGraphBuilder.addMainRoot(
     ) {
         addMain()
         addLogin()
+        addSettings()
     }
 }
 
@@ -88,5 +90,12 @@ private fun NavGraphBuilder.addLogin() {
 private fun NavGraphBuilder.addMain() {
     composableScreen(LeafScreen.Main) {
         MainScreen()
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addSettings() {
+    composableScreen(LeafScreen.Settings) {
+        SettingsScreen()
     }
 }
