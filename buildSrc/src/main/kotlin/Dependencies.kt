@@ -25,6 +25,7 @@ object Deps {
     const val composeNavigation = "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
     const val composeNavigationHilt = "androidx.hilt:hilt-navigation-compose:${Versions.composeHiltNavigation}"
     const val composeActivity = "androidx.activity:activity-compose:${Versions.activityCompose}"
+    const val composeLiveData = "androidx.compose.runtime:runtime-livedata:${Versions.composeLiveData}"
 
 
     const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutine}"
@@ -46,6 +47,7 @@ object Deps {
     const val firebaseAppCheck = "com.google.firebase:firebase-appcheck-safetynet:${Versions.firebaseAppCheck}"
     const val firebaseAnalytics = "com.google.firebase:firebase-analytics-ktx"
     const val firebaseAuth = "com.google.firebase:firebase-auth-ktx"
+    const val firebaseFirestore = "com.google.firebase:firebase-firestore-ktx"
     const val gmsAuth = "com.google.android.gms:play-services-auth:${Versions.gmsAuth}"
 
     const val dagger = "com.google.dagger:dagger:${Versions.dagger}"

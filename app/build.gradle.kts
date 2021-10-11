@@ -81,6 +81,7 @@ dependencies {
     implementation(Deps.composeNavigation)
     implementation(Deps.composeNavigationHilt)
     implementation(Deps.composeActivity)
+    implementation(Deps.composeLiveData)
 
     // Hilt
     implementation(Deps.dagger)
@@ -93,6 +94,7 @@ dependencies {
     implementation(Deps.firebaseAppCheck)
     implementation(Deps.firebaseAnalytics)
     implementation(Deps.firebaseAuth)
+    implementation(Deps.firebaseFirestore)
     implementation(Deps.gmsAuth)
 
     //Coroutines

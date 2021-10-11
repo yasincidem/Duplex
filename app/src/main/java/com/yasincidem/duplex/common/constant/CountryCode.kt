@@ -15,5 +15,5 @@ data class Country(
     @DrawableRes val flagDrawableRes: Int,
     val countryCode: Int,
 ) {
-    fun getCountryCodeString(): String = "+ $countryCode"
+    fun getCountryCodeString(): String = "+$countryCode"
 }

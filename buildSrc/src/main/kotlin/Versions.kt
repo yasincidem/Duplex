@@ -14,6 +14,7 @@ object Versions {
     const val accompanist = "0.18.0"
     const val composeNavigation = "2.4.0-alpha08"
     const val composeHiltNavigation = "1.0.0-alpha03"
+    const val composeLiveData = "1.1.0-alpha05"
 
     const val coroutine = "1.5.1"
 

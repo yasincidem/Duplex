@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
@@ -37,6 +39,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -75,6 +79,7 @@ import com.yasincidem.duplex.ui.theme.MainLightOrange
 import com.yasincidem.duplex.ui.theme.MainOrange
 import com.yasincidem.duplex.ui.theme.Translucent
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel = viewModel(),
@@ -86,6 +91,8 @@ fun LoginScreen(
     val barColor = MaterialTheme.colors.background
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val loadingState by loginViewModel.loadingState.observeAsState()
+    val successState by loginViewModel.successState.observeAsState()
 
     val phoneState = rememberSaveable { mutableStateOf("") }
     val userNameState = rememberSaveable { mutableStateOf("") }
@@ -114,14 +121,20 @@ fun LoginScreen(
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
             try {
+                loginViewModel.setLoadingLiveData(true)
                 val account = task.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                loginViewModel.signWithCredential(credential)
-                navigator.navigate(LeafScreen.Main) {
-                    launchSingleTop = true
-                    popUpTo(0)
+                account?.id?.let { userId ->
+                    loginViewModel.signWithCredentialAndSaveData(
+                        credential = credential,
+                        userId = userId,
+                        account = account,
+                        username = userNameState.value,
+                        phoneNumber = "${countryState.value.getCountryCodeString()}${phoneState.value}",
+                    )
                 }
             } catch (e: ApiException) {
+                loginViewModel.setLoadingLiveData(true)
                 Log.w("TAG", "Google sign in failed", e)
             }
         }
@@ -146,12 +159,21 @@ fun LoginScreen(
         }
     }
 
+    if (successState == true) {
+        navigator.navigate(LeafScreen.Main) {
+            launchSingleTop = true
+            popUpTo(0)
+        }
+    }
+
+    Log.i("rrrrrr", (successState == true || loadingState == true).toString())
+
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
             .fillMaxSize()
             .navigationBarsWithImePadding()
-            .disableMultiTouch()
+            .disableMultiTouch(successState == true || loadingState == true)
     ) {
 
         Column(
@@ -185,6 +207,14 @@ fun LoginScreen(
                             )
                     )
                 }
+            }
+
+            Box(modifier = Modifier.fillMaxWidth().height(12.dp)) {
+                if (loadingState == true)
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MainOrange
+                    )
             }
 
             Column(
