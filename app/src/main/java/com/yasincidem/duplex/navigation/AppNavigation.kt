@@ -11,6 +11,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.yasincidem.duplex.common.composable.collectEvent
 import com.yasincidem.duplex.feature.ui.login.LoginScreen
 import com.yasincidem.duplex.feature.ui.main.MainScreen
+import com.yasincidem.duplex.feature.ui.search.SearchScreen
 import com.yasincidem.duplex.feature.ui.settings.SettingsScreen
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -76,6 +77,7 @@ private fun NavGraphBuilder.addMainRoot(
         addMain()
         addLogin()
         addSettings()
+        addSearch()
     }
 }
 
@@ -97,5 +99,12 @@ private fun NavGraphBuilder.addMain() {
 private fun NavGraphBuilder.addSettings() {
     composableScreen(LeafScreen.Settings) {
         SettingsScreen()
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addSearch() {
+    composableScreen(LeafScreen.Search) {
+        SearchScreen()
     }
 }

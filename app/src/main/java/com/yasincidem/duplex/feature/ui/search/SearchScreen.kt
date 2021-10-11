@@ -1,80 +1,93 @@
-package com.yasincidem.duplex.feature.ui.main
+package com.yasincidem.duplex.feature.ui.search
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ListItem
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.yasincidem.duplex.R
 import com.yasincidem.duplex.common.modifier.disableMultiTouch
+import com.yasincidem.duplex.feature.ui.main.Menu
 import com.yasincidem.duplex.navigation.LeafScreen
 import com.yasincidem.duplex.navigation.LocalNavigator
 import com.yasincidem.duplex.navigation.Navigator
 import com.yasincidem.duplex.ui.theme.MainDarkBlueContent
 import com.yasincidem.duplex.ui.theme.MainOrange
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-enum class Menu {
-    Settings,
-    Logout
-}
-
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun MainScreen(
+fun SearchScreen(
     navigator: Navigator = LocalNavigator.current,
-    mainViewModel: MainViewModel = viewModel(),
+    searchViewModel: SearchViewModel = viewModel(),
 ) {
 
     val systemUiController = rememberSystemUiController()
+    val scope = rememberCoroutineScope()
     val isDarkMode = isSystemInDarkTheme()
-    val barColor = MaterialTheme.colors.background
-    val searchState = rememberSaveable { mutableStateOf("") }
+    val backgroundColor = if (isDarkMode) {
+        MainDarkBlueContent
+    } else {
+        MainOrange.copy(alpha = 0.2f)
+    }
+
+    val searchState by searchViewModel.query.collectAsState()
+    val users by searchViewModel.getUsers().collectAsState(listOf())
+
     val dropdownState = rememberSaveable { mutableStateOf(false) }
+
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     SideEffect {
         systemUiController.apply {
             setSystemBarsColor(
-                color = barColor,
+                color = backgroundColor,
                 darkIcons = isDarkMode.not()
             )
             setNavigationBarColor(
-                color = barColor,
+                color = backgroundColor,
                 darkIcons = isDarkMode.not()
             )
         }
@@ -85,33 +98,33 @@ fun MainScreen(
             .fillMaxSize()
             .systemBarsPadding()
             .disableMultiTouch(),
+        backgroundColor = backgroundColor,
         topBar = {
             TextField(
                 modifier = Modifier
+                    .focusRequester(focusRequester)
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .clickable {
-                        navigator.navigate(LeafScreen.Search)
-                    },
-                value = searchState.value,
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                value = searchState,
                 onValueChange = { input ->
-                    searchState.value = input
-                    if (input.isNotEmpty())
-                        mainViewModel.searchContact(searchState.value)
+                    searchViewModel.updateSearchQuery(input)
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     autoCorrect = false
                 ),
                 leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Search,
-                        contentDescription = "search icon"
-                    )
+                    IconButton(
+                        onClick = {
+                            navigator.back()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "search icon"
+                        )
+                    }
                 },
-                enabled = false,
-                readOnly = true,
                 trailingIcon = {
                     IconButton(
                         onClick = {
@@ -135,7 +148,7 @@ fun MainScreen(
                                                 navigator.navigate(LeafScreen.Settings)
                                             }
                                             Menu.Logout -> {
-                                                mainViewModel.apply {
+                                                searchViewModel.apply {
                                                     logout()
                                                     if (!isLoggedIn())
                                                         navigator.navigate(LeafScreen.Login) {
@@ -160,48 +173,41 @@ fun MainScreen(
                 singleLine = true,
                 shape = CircleShape,
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = if (isDarkMode) {
-                        MainDarkBlueContent
-                    } else {
-                        MainOrange.copy(alpha = 0.2f)
-                    },
+                    backgroundColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent
                 )
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navigator.navigate(LeafScreen.Search)
-                },
-                backgroundColor = if (isDarkMode) MainDarkBlueContent else MainOrange
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "new ")
-            }
-        },
         content = {
             Surface(
-                color = MaterialTheme.colors.background,
+                color = Color.Transparent,
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                Column(
-                    Modifier
-                        .alpha(0.8f)
-                        .wrapContentSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.vector_empty_main_screen),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = "Your chats will appear here",
-                        style = MaterialTheme.typography.subtitle2
-                    )
+                LazyColumn {
+                    if (users.isNotEmpty()) {
+                        items(users) {
+                            ListItem(
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                icon = {
+                                    Image(
+                                        modifier = Modifier.size(48.dp),
+                                        painter = rememberImagePainter(
+                                            data = it.photoUrl,
+                                            builder = {
+                                                transformations(CircleCropTransformation())
+                                            }
+                                        ),
+                                        contentDescription = "photo url"
+                                    )
+                                },
+                                text = {
+                                    Text(text = it.username)
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }

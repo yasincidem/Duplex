@@ -9,10 +9,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.NamedNavArgument
 import com.google.accompanist.navigation.animation.composable
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -42,6 +42,7 @@ sealed class RootScreen constructor(
     object Login : RootScreen("login_root", LeafScreen.Login)
     object Main : RootScreen("main_root", LeafScreen.Main)
     object Settings : RootScreen("settings_root", LeafScreen.Settings)
+    object Search : RootScreen("search_root", LeafScreen.Search)
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -82,6 +83,10 @@ sealed class LeafScreen(
 
     object Settings : LeafScreen(
         "settings"
+    )
+
+    object Search : LeafScreen(
+        "search",
     )
 }
 
