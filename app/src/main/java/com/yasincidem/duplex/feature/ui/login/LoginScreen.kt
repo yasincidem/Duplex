@@ -134,7 +134,7 @@ fun LoginScreen(
                     )
                 }
             } catch (e: ApiException) {
-                loginViewModel.setLoadingLiveData(true)
+                loginViewModel.setLoadingLiveData(false)
                 Log.w("TAG", "Google sign in failed", e)
             }
         }
@@ -165,8 +165,6 @@ fun LoginScreen(
             popUpTo(0)
         }
     }
-
-    Log.i("rrrrrr", (successState == true || loadingState == true).toString())
 
     Surface(
         color = MaterialTheme.colors.background,
