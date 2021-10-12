@@ -13,6 +13,8 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.composable
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -91,9 +93,18 @@ sealed class LeafScreen(
     )
 
     object Chat : LeafScreen(
-        "chat",
-    )
+        "chat/{$CHAT_OTHER_ID}",
+        arguments = listOf(
+            navArgument(CHAT_OTHER_ID) {
+                type = NavType.StringType
+            }
+        )
+    ) {
+        fun buildRoute(id: String) = "chat/$id"
+    }
 }
+
+const val CHAT_OTHER_ID = "CHAT_OTHER_ID"
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.composableScreen(

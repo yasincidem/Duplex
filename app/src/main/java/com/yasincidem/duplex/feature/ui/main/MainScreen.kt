@@ -1,7 +1,5 @@
 package com.yasincidem.duplex.feature.ui.main
 
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -43,16 +40,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -60,7 +54,6 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.yasincidem.duplex.MainActivity
 import com.yasincidem.duplex.R
 import com.yasincidem.duplex.common.modifier.disableMultiTouch
 import com.yasincidem.duplex.navigation.LeafScreen
@@ -69,7 +62,6 @@ import com.yasincidem.duplex.navigation.Navigator
 import com.yasincidem.duplex.ui.theme.MainDarkBlueContent
 import com.yasincidem.duplex.ui.theme.MainOrange
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 enum class Menu {
     Settings,
@@ -106,8 +98,6 @@ fun MainScreen(
             )
         }
     }
-
-    Log.i("qwewqe", chats.toString())
 
     Scaffold(
         Modifier
@@ -167,7 +157,6 @@ fun MainScreen(
                                                             launchSingleTop = true
                                                             popUpTo(0)
                                                         }
-
                                                 }
                                             }
                                         }
@@ -219,7 +208,7 @@ fun MainScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Crossfade(targetState = chats.list.isEmpty() && loadingState == false) {
+                    Crossfade(targetState = chats.isEmpty() && loadingState == false) {
                         if (it) {
                             Column(
                                 Modifier.alpha(0.8f)
@@ -235,20 +224,20 @@ fun MainScreen(
                             }
                         } else {
                             LazyColumn(
-                                contentPadding= PaddingValues(top = 16.dp)
+                                contentPadding = PaddingValues(top = 16.dp)
                             ) {
-                                items(chats.list) {
+                                items(chats) {
                                     ListItem(
                                         modifier = Modifier
                                             .clickable {
-
+                                                navigator.navigate(LeafScreen.Chat.buildRoute(it.id))
                                             }
                                             .padding(horizontal = 12.dp, vertical = 4.dp),
                                         icon = {
                                             Image(
                                                 modifier = Modifier.size(48.dp),
                                                 painter = rememberImagePainter(
-                                                    data = it?.photoUrl,
+                                                    data = it.photoUrl,
                                                     builder = {
                                                         transformations(CircleCropTransformation())
                                                     }
@@ -257,10 +246,10 @@ fun MainScreen(
                                             )
                                         },
                                         text = {
-                                            Text(text = it?.username.toString())
+                                            Text(text = it.username)
                                         },
                                         secondaryText = {
-                                            Text(text = it?.name.toString())
+                                            Text(text = it.name)
                                         }
                                     )
                                     Divider()

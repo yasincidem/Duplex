@@ -1,6 +1,7 @@
 package com.yasincidem.duplex.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -8,6 +9,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.yasincidem.duplex.common.composable.collectEvent
 import com.yasincidem.duplex.feature.ui.chat.ChatScreen
 import com.yasincidem.duplex.feature.ui.login.LoginScreen
@@ -91,7 +93,7 @@ private fun NavGraphBuilder.addLogin() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 private fun NavGraphBuilder.addMain() {
     composableScreen(LeafScreen.Main) {
         MainScreen()
@@ -112,7 +114,7 @@ private fun NavGraphBuilder.addSearch() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalPermissionsApi::class)
 private fun NavGraphBuilder.addChat() {
     composableScreen(LeafScreen.Chat) {
         ChatScreen()

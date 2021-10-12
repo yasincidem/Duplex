@@ -37,6 +37,7 @@ object Deps {
     const val accompanistPagerIndicator = "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist}"
     const val accompanistPagerInsets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
     const val accompanistNavigationAnimation = "com.google.accompanist:accompanist-navigation-animation:${Versions.accompanist}"
+    const val accompanistPermission = "com.google.accompanist:accompanist-permissions:${Versions.accompanist}"
 
     const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
 
@@ -49,6 +50,7 @@ object Deps {
     const val firebaseAuth = "com.google.firebase:firebase-auth-ktx"
     const val firebaseFirestore = "com.google.firebase:firebase-firestore-ktx"
     const val firebaseDatabase = "com.google.firebase:firebase-database-ktx"
+    const val firebaseStorage = "com.google.firebase:firebase-storage-ktx"
     const val gmsAuth = "com.google.android.gms:play-services-auth:${Versions.gmsAuth}"
 
     const val dagger = "com.google.dagger:dagger:${Versions.dagger}"

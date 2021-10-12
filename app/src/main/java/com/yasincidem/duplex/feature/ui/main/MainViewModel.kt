@@ -1,6 +1,5 @@
 package com.yasincidem.duplex.feature.ui.main
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +8,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yasincidem.duplex.feature.ui.search.User
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @HiltViewModel
@@ -24,7 +23,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     private val chatsRef = Firebase.firestore.collection("chats")
 
-    val chats = MutableStateFlow(Chats(emptyList()))
+    val chats = MutableStateFlow<List<User>>(emptyList())
     val loadingState = MutableLiveData<Boolean?>(null)
 
     init {
@@ -35,13 +34,13 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun getChats(): Flow<Chats> = callbackFlow {
+    private fun getChats(): Flow<List<User>> = callbackFlow {
         loadingState.value = true
         val ref = chatsRef.document(currentUserId()).collection("to")
 
         val subscription = ref.addSnapshotListener { snapshot, _ ->
             if (snapshot?.isEmpty == false) {
-                trySend(Chats(snapshot.toObjects(User::class.java)))
+                trySend(snapshot.toObjects(User::class.java))
             }
         }
 
@@ -57,7 +56,3 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     fun logout() = Firebase.auth.signOut()
 }
-
-data class Chats(
-    val list: List<User?>
-)

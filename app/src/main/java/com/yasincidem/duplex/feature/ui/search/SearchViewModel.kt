@@ -6,7 +6,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @OptIn(FlowPreview::class)
@@ -57,8 +57,8 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         Firebase.firestore.collection("chats")
             .document("${Firebase.auth.currentUser?.uid}/to/${user.id}").set(user.asMap())
             .addOnSuccessListener {
-                //loadingState.value = false
-                //successState.value = true
+                // loadingState.value = false
+                // successState.value = true
             }.await()
     }
 

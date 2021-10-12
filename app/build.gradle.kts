@@ -96,6 +96,7 @@ dependencies {
     implementation(Deps.firebaseAuth)
     implementation(Deps.firebaseFirestore)
     implementation(Deps.firebaseDatabase)
+    implementation(Deps.firebaseStorage)
     implementation(Deps.gmsAuth)
 
     //Coroutines
@@ -109,6 +110,7 @@ dependencies {
     implementation(Deps.accompanistPagerIndicator)
     implementation(Deps.accompanistPagerInsets)
     implementation(Deps.accompanistNavigationAnimation)
+    implementation(Deps.accompanistPermission)
 
     // Image
     implementation(Deps.lottie)
