@@ -43,6 +43,7 @@ sealed class RootScreen constructor(
     object Main : RootScreen("main_root", LeafScreen.Main)
     object Settings : RootScreen("settings_root", LeafScreen.Settings)
     object Search : RootScreen("search_root", LeafScreen.Search)
+    object Chat : RootScreen("chat_root", LeafScreen.Chat)
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -87,6 +88,10 @@ sealed class LeafScreen(
 
     object Search : LeafScreen(
         "search",
+    )
+
+    object Chat : LeafScreen(
+        "chat",
     )
 }
 

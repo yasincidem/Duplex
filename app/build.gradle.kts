@@ -95,6 +95,7 @@ dependencies {
     implementation(Deps.firebaseAnalytics)
     implementation(Deps.firebaseAuth)
     implementation(Deps.firebaseFirestore)
+    implementation(Deps.firebaseDatabase)
     implementation(Deps.gmsAuth)
 
     //Coroutines

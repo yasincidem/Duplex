@@ -124,15 +124,12 @@ fun LoginScreen(
                 loginViewModel.setLoadingLiveData(true)
                 val account = task.getResult(ApiException::class.java)
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                account?.id?.let { userId ->
-                    loginViewModel.signWithCredentialAndSaveData(
-                        credential = credential,
-                        userId = userId,
-                        account = account,
-                        username = userNameState.value,
-                        phoneNumber = "${countryState.value.getCountryCodeString()}${phoneState.value}",
-                    )
-                }
+                loginViewModel.signWithCredentialAndSaveData(
+                    credential = credential,
+                    account = account,
+                    username = userNameState.value,
+                    phoneNumber = "${countryState.value.getCountryCodeString()}${phoneState.value}",
+                )
             } catch (e: ApiException) {
                 loginViewModel.setLoadingLiveData(false)
                 Log.w("TAG", "Google sign in failed", e)

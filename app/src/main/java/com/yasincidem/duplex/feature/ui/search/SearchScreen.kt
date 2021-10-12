@@ -1,6 +1,7 @@
 package com.yasincidem.duplex.feature.ui.search
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -52,6 +54,7 @@ import com.yasincidem.duplex.navigation.Navigator
 import com.yasincidem.duplex.ui.theme.MainDarkBlueContent
 import com.yasincidem.duplex.ui.theme.MainOrange
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -61,7 +64,6 @@ fun SearchScreen(
 ) {
 
     val systemUiController = rememberSystemUiController()
-    val scope = rememberCoroutineScope()
     val isDarkMode = isSystemInDarkTheme()
     val backgroundColor = if (isDarkMode) {
         MainDarkBlueContent
@@ -189,7 +191,12 @@ fun SearchScreen(
                     if (users.isNotEmpty()) {
                         items(users) {
                             ListItem(
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                modifier = Modifier
+                                    .clickable {
+                                        searchViewModel.createChat(it)
+                                        navigator.navigate(LeafScreen.Chat)
+                                    }
+                                    .padding(horizontal = 12.dp, vertical = 4.dp),
                                 icon = {
                                     Image(
                                         modifier = Modifier.size(48.dp),
@@ -204,6 +211,9 @@ fun SearchScreen(
                                 },
                                 text = {
                                     Text(text = it.username)
+                                },
+                                secondaryText = {
+                                    Text(text = it.name)
                                 }
                             )
                         }

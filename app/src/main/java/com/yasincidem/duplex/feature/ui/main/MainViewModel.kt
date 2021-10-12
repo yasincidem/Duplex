@@ -1,53 +1,63 @@
 package com.yasincidem.duplex.feature.ui.main
 
-import android.content.Context
-import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.yasincidem.duplex.feature.ui.search.User
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    private val usersRef = Firebase.firestore.collection("users")
+    private val chatsRef = Firebase.firestore.collection("chats")
 
-    fun searchContact(
-        searchKey: String,
-    ) = viewModelScope.launch {
-        usersRef
-            .orderBy("username")
-            .startAt(searchKey)
-            .endAt(searchKey + '\uf8ff')
-            .get()
-            .addOnSuccessListener {
-                Log.i("tttrtrtr size", "${it.size()}")
+    val chats = MutableStateFlow(Chats(emptyList()))
+    val loadingState = MutableLiveData<Boolean?>(null)
 
-                for (document in it.documents) {
-                    Log.i("tttrtrtr", "${document.id} => ${document.data}")
-                }
-            }.await()
+    init {
+        viewModelScope.launch {
+            getChats().collect {
+                chats.value = it
+            }
+        }
     }
 
-    fun getProfileInformation(@ApplicationContext context: Context): GoogleSignInAccount? {
-        return GoogleSignIn.getLastSignedInAccount(context)
+    private fun getChats(): Flow<Chats> = callbackFlow {
+        loadingState.value = true
+        val ref = chatsRef.document(currentUserId()).collection("to")
+
+        val subscription = ref.addSnapshotListener { snapshot, _ ->
+            if (snapshot?.isEmpty == false) {
+                trySend(Chats(snapshot.toObjects(User::class.java)))
+            }
+        }
+
+        awaitClose {
+            loadingState.value = false
+            subscription.remove()
+        }
     }
 
-    fun getLastSignInAccount(@ApplicationContext context: Context): GoogleSignInAccount? {
-        return GoogleSignIn.getLastSignedInAccount(context)
-    }
+    fun currentUserId() = Firebase.auth.currentUser?.uid ?: ""
 
     fun isLoggedIn() = Firebase.auth.currentUser != null
 
-    fun getCurrentUserOrNull() = Firebase.auth.currentUser
-
     fun logout() = Firebase.auth.signOut()
 }
+
+data class Chats(
+    val list: List<User?>
+)

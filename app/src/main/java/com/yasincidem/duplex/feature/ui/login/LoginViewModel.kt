@@ -27,7 +27,6 @@ class LoginViewModel @Inject constructor() : ViewModel() {
 
     fun signWithCredentialAndSaveData(
         credential: AuthCredential,
-        userId: String,
         account: GoogleSignInAccount,
         username: String,
         phoneNumber: String,
@@ -35,7 +34,9 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         try {
             Firebase.auth.signInWithCredential(credential)
                 .addOnSuccessListener {
+                    val id = Firebase.auth.currentUser?.uid ?: return@addOnSuccessListener
                     val userData = hashMapOf(
+                        "id" to id,
                         "name" to account.displayName,
                         "email" to account.email,
                         "photoUrl" to account.photoUrl?.toString(),
@@ -43,7 +44,7 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                         "phoneNumber" to phoneNumber,
                     )
                     saveUserData(
-                        userId,
+                        id,
                         userData
                     )
                 }.addOnFailureListener {

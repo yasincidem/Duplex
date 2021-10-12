@@ -9,10 +9,12 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.yasincidem.duplex.common.composable.collectEvent
+import com.yasincidem.duplex.feature.ui.chat.ChatScreen
 import com.yasincidem.duplex.feature.ui.login.LoginScreen
 import com.yasincidem.duplex.feature.ui.main.MainScreen
 import com.yasincidem.duplex.feature.ui.search.SearchScreen
 import com.yasincidem.duplex.feature.ui.settings.SettingsScreen
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -78,6 +80,7 @@ private fun NavGraphBuilder.addMainRoot(
         addLogin()
         addSettings()
         addSearch()
+        addChat()
     }
 }
 
@@ -102,9 +105,16 @@ private fun NavGraphBuilder.addSettings() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalCoroutinesApi::class)
 private fun NavGraphBuilder.addSearch() {
     composableScreen(LeafScreen.Search) {
         SearchScreen()
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addChat() {
+    composableScreen(LeafScreen.Chat) {
+        ChatScreen()
     }
 }
