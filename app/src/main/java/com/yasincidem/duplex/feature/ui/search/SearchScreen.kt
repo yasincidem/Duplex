@@ -51,6 +51,7 @@ import com.yasincidem.duplex.feature.ui.main.Menu
 import com.yasincidem.duplex.navigation.LeafScreen
 import com.yasincidem.duplex.navigation.LocalNavigator
 import com.yasincidem.duplex.navigation.Navigator
+import com.yasincidem.duplex.navigation.RootScreen
 import com.yasincidem.duplex.ui.theme.MainDarkBlueContent
 import com.yasincidem.duplex.ui.theme.MainOrange
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -194,7 +195,9 @@ fun SearchScreen(
                                 modifier = Modifier
                                     .clickable {
                                         searchViewModel.createChat(it)
-                                        navigator.navigate(LeafScreen.Chat)
+                                        navigator.navigate(LeafScreen.Chat) {
+                                            popUpTo(LeafScreen.Main.route)
+                                        }
                                     }
                                     .padding(horizontal = 12.dp, vertical = 4.dp),
                                 icon = {

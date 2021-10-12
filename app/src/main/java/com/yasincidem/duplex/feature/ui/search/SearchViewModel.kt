@@ -1,17 +1,11 @@
 package com.yasincidem.duplex.feature.ui.search
 
-import android.content.Context
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.yasincidem.duplex.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -60,8 +54,8 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     }
 
     fun createChat(user: User) = viewModelScope.launch {
-        val docRef = Firebase.firestore.collection("chats")
-        docRef.document("${Firebase.auth.currentUser?.uid}/to/${user.id}").set(user.asMap())
+        Firebase.firestore.collection("chats")
+            .document("${Firebase.auth.currentUser?.uid}/to/${user.id}").set(user.asMap())
             .addOnSuccessListener {
                 //loadingState.value = false
                 //successState.value = true
