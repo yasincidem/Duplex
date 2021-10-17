@@ -6,6 +6,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -13,12 +15,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @OptIn(FlowPreview::class)
@@ -27,11 +27,12 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     private val usersRef = Firebase.firestore.collection("users")
 
+    val currentUserId = Firebase.auth.currentUser?.uid
+
     val query = MutableStateFlow("")
 
     fun getUsers(): Flow<List<User>> {
         return query
-            .debounce(100)
             .flatMapLatest { query ->
                 getSearchResult(query)
             }
@@ -55,11 +56,23 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     fun createChat(user: User) = viewModelScope.launch {
         Firebase.firestore.collection("chats")
-            .document("${Firebase.auth.currentUser?.uid}/to/${user.id}").set(user.asMap())
-            .addOnSuccessListener {
-                // loadingState.value = false
-                // successState.value = true
-            }.await()
+            .document("${currentUserId}/to/${user.id}").set(user.asMap())
+            .await()
+
+        currentUserId ?: return@launch
+        Firebase.firestore.collection("users")
+            .document(currentUserId)
+            .get().addOnSuccessListener { snapShot ->
+                if (snapShot.exists()) {
+                    val me = snapShot.toObject(User::class.java) ?: return@addOnSuccessListener
+                    viewModelScope.launch {
+                        Firebase.firestore.collection("chats")
+                            .document("${user.id}/to/${currentUserId}").set(me.asMap())
+                            .await()
+                    }
+                }
+            }
+            .await()
     }
 
     fun isLoggedIn() = Firebase.auth.currentUser != null

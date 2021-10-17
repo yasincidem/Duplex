@@ -186,7 +186,7 @@ fun SearchScreen(
             ) {
                 LazyColumn {
                     if (users.isNotEmpty()) {
-                        items(users) {
+                        items(users.filter { it.id != searchViewModel.currentUserId }) {
                             ListItem(
                                 modifier = Modifier
                                     .clickable {
